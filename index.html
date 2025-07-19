@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Interactivo de Prompt Engineering para IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Tierra Calma -->
+    <!-- Application Structure Plan: He diseñado esta aplicación no como un documento lineal, sino como una herramienta de aprendizaje temático. La estructura sigue un flujo lógico: 1. Introducción (Hero), 2. Fundamentos Teóricos, 3. Componentes Desglosados (interactivo), 4. Herramienta Práctica (Constructor de Prompts), y 5. Galería de Ejemplos (para inspiración y validación). Este enfoque permite a los usuarios tanto aprender los conceptos en orden como saltar directamente a la sección que más necesiten, como la herramienta de construcción. La interactividad en las secciones de componentes y el constructor es clave para transformar el aprendizaje pasivo en una experiencia activa y aplicada, que es el objetivo de un "manual práctico". -->
+    <!-- Visualization & Content Choices: 
+        - Flujo de IA (Diagrama): Report Info -> Proceso de IA -> Goal -> Organizar -> Viz/Presentation Method -> Diagrama con HTML/CSS (divs y bordes) -> Interaction -> Estático, visualmente claro -> Justification -> Una forma simple y universal de entender el flujo sin necesidad de librerías complejas.
+        - Componentes del Prompt (Tarjetas Interactivas): Report Info -> Estructura de un prompt -> Goal -> Informar/Explorar -> Viz/Presentation Method -> Rejilla de tarjetas clicables con HTML/CSS/JS -> Interaction -> Al hacer clic, se revela la descripción y ejemplos de cada componente -> Justification -> Permite al usuario enfocarse en un componente a la vez, evitando la sobrecarga de información y haciendo el aprendizaje modular.
+        - Constructor de Prompts (Herramienta): Report Info -> Creación de prompts -> Goal -> Aplicar/Crear -> Viz/Presentation Method -> Formularios interactivos (selects, inputs) con JS -> Interaction -> El usuario selecciona opciones y el prompt se construye en tiempo real. Un botón permite copiar el resultado -> Justification -> Es el núcleo práctico del manual. Transforma la teoría en una herramienta funcional e inmediata.
+        - Galería de Ejemplos (Filtros): Report Info -> Ejemplos de resultados -> Goal -> Comparar/Inspirar -> Viz/Presentation Method -> Rejilla de imágenes con texto y botones de filtro JS -> Interaction -> Los botones filtran la galería por categoría -> Justification -> Demuestra el poder de los prompts y ayuda a los usuarios a encontrar inspiración relevante para sus propias creaciones.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bg-color: #F5F5DC; /* Beige */
+            --text-color: #3D405B; /* Gris azulado oscuro */
+            --primary-color: #E07A5F; /* Terracota suave */
+            --secondary-color: #81B29A; /* Verde salvia */
+            --accent-color: #F2CC8F; /* Amarillo dorado pálido */
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+        }
+        .bg-primary { background-color: var(--primary-color); }
+        .bg-secondary { background-color: var(--secondary-color); }
+        .bg-accent { background-color: var(--accent-color); }
+        .text-primary { color: var(--primary-color); }
+        .text-secondary { color: var(--secondary-color); }
+        .border-primary { border-color: var(--primary-color); }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .prompt-display {
+            background-color: #e9e9d0;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .arrow {
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid var(--secondary-color);
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold" style="font-family: 'Playfair Display', serif;">Prompt<span class="text-primary">Craft</span></div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#fundamentos" class="nav-link">Fundamentos</a>
+                    <a href="#componentes" class="nav-link">Componentes</a>
+                    <a href="#constructor" class="nav-link">Constructor</a>
+                    <a href="#galeria" class="nav-link">Galería</a>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-white border border-gray-300 rounded-md p-2">
+                        <option value="#fundamentos">Fundamentos</option>
+                        <option value="#componentes">Componentes</option>
+                        <option value="#constructor">Constructor</option>
+                        <option value="#galeria">Galería</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <header class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="font-family: 'Playfair Display', serif;">Manual de Prompt Engineering para IA</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700">Una guía interactiva para aprender a comunicarte con las IAs generadoras de imágenes y transformar tus ideas en arte digital espectacular.</p>
+        </header>
+
+        <section id="fundamentos" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Fundamentos Esenciales</h2>
+            <p class="text-center max-w-2xl mx-auto mb-12 text-gray-600">Para crear imágenes impactantes, primero debemos entender el lenguaje de la IA. Esta sección cubre los conceptos básicos del "prompting": qué es un prompt, por qué su estructura es crucial y cómo la IA lo interpreta para generar una imagen.</p>
+            
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold mb-4">¿Qué es un Prompt?</h3>
+                <p class="mb-6">Un prompt es simplemente una instrucción en texto que le das a una Inteligencia Artificial. En el contexto de la generación de imágenes, es la descripción detallada de la escena que quieres crear. Piensa en ti como un director de cine y en la IA como tu equipo de efectos visuales: cuanto más claras y específicas sean tus instrucciones, mejor será el resultado final.</p>
+                
+                <h3 class="text-2xl font-bold mb-4">El Flujo de Creación</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-center">
+                    <div class="bg-accent/30 p-4 rounded-lg shadow w-full md:w-1/4">
+                        <h4 class="font-bold">1. Tu Idea (El Prompt)</h4>
+                        <p class="text-sm">"Un gato astronauta flotando en el espacio, estilo impresionista"</p>
+                    </div>
+                    <div class="arrow transform md:rotate-0 rotate-90"></div>
+                    <div class="bg-secondary/30 p-4 rounded-lg shadow w-full md:w-1/4">
+                        <h4 class="font-bold">2. Modelo de IA</h4>
+                        <p class="text-sm">Procesa el lenguaje y lo traduce a conceptos visuales.</p>
+                    </div>
+                    <div class="arrow transform md:rotate-0 rotate-90"></div>
+                    <div class="bg-primary/30 p-4 rounded-lg shadow w-full md:w-1/4">
+                        <h4 class="font-bold">3. La Imagen Generada</h4>
+                        <p class="text-sm">El resultado visual de tu instrucción.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="componentes" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Los Componentes Clave de un Prompt</h2>
+            <p class="text-center max-w-2xl mx-auto mb-12 text-gray-600">Un prompt efectivo se construye con varios bloques. Aquí puedes explorar cada componente. Haz clic en cada uno para expandir y ver su descripción y ejemplos de palabras clave.</p>
+            
+            <div class="space-y-4 max-w-4xl mx-auto" id="component-accordion">
+                <!-- Accordion items will be generated by JS here -->
+            </div>
+        </section>
+
+        <section id="constructor" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Constructor de Prompts Interactivo</h2>
+            <p class="text-center max-w-2xl mx-auto mb-12 text-gray-600">¡Es hora de practicar! Utiliza esta herramienta para construir tu propio prompt paso a paso. Combina diferentes elementos y observa cómo se forma una instrucción compleja y detallada. Cuando termines, copia tu creación y úsala en tu generador de IA favorito.</p>
+            
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="subject" class="font-bold block mb-2">1. Sujeto Principal</label>
+                        <input type="text" id="subject" class="w-full p-2 border border-gray-300 rounded" placeholder="Ej: Un zorro sabio leyendo un libro">
+                    </div>
+                    <div>
+                        <label for="style" class="font-bold block mb-2">2. Estilo Artístico</label>
+                        <select id="style" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="">-- Sin estilo específico --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="composition" class="font-bold block mb-2">3. Composición y Encuadre</label>
+                        <select id="composition" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="">-- Sin encuadre específico --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="lighting" class="font-bold block mb-2">4. Iluminación</label>
+                        <select id="lighting" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="">-- Sin iluminación específica --</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="details" class="font-bold block mb-2">5. Detalles y Extras</label>
+                        <input type="text" id="details" class="w-full p-2 border border-gray-300 rounded" placeholder="Ej: con gafas, en una biblioteca antigua, intrincado">
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h4 class="font-bold text-lg mb-2">Tu Prompt Generado:</h4>
+                    <div id="generated-prompt" class="prompt-display text-gray-800 font-mono"></div>
+                    <button id="copy-button" class="mt-4 bg-secondary text-white font-bold py-2 px-4 rounded hover:bg-opacity-80 transition-colors">
+                        Copiar Prompt
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="galeria" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Galería de Ejemplos</h2>
+            <p class="text-center max-w-2xl mx-auto mb-12 text-gray-600">La inspiración es clave. Explora esta galería para ver cómo diferentes combinaciones de prompts resultan en imágenes únicas. Usa los filtros para navegar por distintos estilos y ver el poder de un prompt bien construido.</p>
+
+            <div class="flex justify-center space-x-2 mb-8" id="gallery-filters">
+                <button class="filter-btn bg-primary text-white py-2 px-4 rounded" data-filter="all">Todos</button>
+                <button class="filter-btn bg-white py-2 px-4 rounded" data-filter="realista">Realista</button>
+                <button class="filter-btn bg-white py-2 px-4 rounded" data-filter="fantasia">Fantasía</button>
+                <button class="filter-btn bg-white py-2 px-4 rounded" data-filter="abstracto">Abstracto</button>
+            </div>
+            
+            <div id="gallery-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-white mt-20">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-600">
+            <p>Manual Interactivo creado con ❤️ para la comunidad de creadores de IA.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = {
+                sujeto: {
+                    title: "Sujeto y Acción",
+                    description: "El 'quién' y el 'qué' de tu imagen. Es el elemento central. Sé específico para obtener mejores resultados.",
+                    examples: ["Un dragón ancestral", "Una ciudad flotante", "Un robot melancólico", "Dos zorros bailando tango"]
+                },
+                estilo: {
+                    title: "Estilo Artístico",
+                    description: "Define la estética general de la imagen. Puede ser un movimiento artístico, el estilo de un artista o un género visual.",
+                    examples: ["Impresionismo", "Arte digital", "Estilo Ghibli", "Cyberpunk", "Fotorealista", "Acuarela"]
+                },
+                composicion: {
+                    title: "Composición y Encuadre",
+                    description: "Controla cómo se organiza la escena y desde qué ángulo se ve. Es el trabajo del 'director de fotografía'.",
+                    examples: ["Plano general (wide shot)", "Primer plano (close-up)", "Vista desde arriba (top-down view)", "Cámara a nivel del suelo (low angle shot)", "Regla de los tercios"]
+                },
+                iluminacion: {
+                    title: "Iluminación",
+                    description: "La luz crea la atmósfera y el ambiente. Puede cambiar drásticamente el sentimiento de una imagen.",
+                    examples: ["Luz de neón", "Iluminación cinematográfica", "Hora dorada (golden hour)", "Luz volumétrica", "Contraluz (backlit)"]
+                },
+                detalle: {
+                    title: "Nivel de Detalle y Color",
+                    description: "Añade adjetivos para refinar la imagen, especificar la paleta de colores o el nivel de complejidad.",
+                    examples: ["Muy detallado (highly detailed)", "Intrincado", "Minimalista", "Paleta de colores pastel", "Vibrante", "Monocromático"]
+                },
+                parametros: {
+                    title: "Parámetros Técnicos",
+                    description: "Comandos específicos del modelo de IA que controlan aspectos como la relación de aspecto, la versión del modelo, o el 'peso' de una palabra.",
+                    examples: ["--ar 16:9 (aspect ratio)", "--v 5.2 (versión del modelo)", "chaos 50 (nivel de aleatoriedad)", "::2 (peso del prompt)"]
+                }
+            };
+
+            const galleryItems = [
+                { src: 'https://i.postimg.cc/hvQvZdts/i-realista-anciana.png', prompt: 'Retrato fotorealista de una mujer anciana con arrugas intrincadas, iluminación de estudio suave, close-up, altamente detallado, 8k.', category: 'realista' },
+                { src: 'https://i.postimg.cc/gJTrKDmr/i-fantasia-castle.png', prompt: 'Un castillo de cristal flotando en un cielo cósmico, rodeado de nebulosas púrpuras y verdes, arte digital, estilo fantástico, luz volumétrica.', category: 'fantasia' },
+                { src: 'https://i.postimg.cc/5tfH9ys9/i-abstract-colors.png', prompt: 'Explosión de colores líquidos, formas orgánicas fluidas, macro, abstracto, vibrante, paleta de colores complementarios.', category: 'abstracto' },
+                { src: 'https://i.postimg.cc/mrVPP4nY/i-realista-paris.png', prompt: 'Un café parisino en una noche lluviosa, reflejos de neón en el asfalto mojado, estilo fotográfico, cinematográfico, luz ambiental.', category: 'realista' },
+                { src: 'https://i.postimg.cc/7Z3Gy0MQ/i-fantasia-forrest.png', prompt: 'Un bosque encantado donde los árboles tienen rostros y brillan con luz propia, estilo Ghibli, acuarela, atmósfera mágica.', category: 'fantasia' },
+                { src: 'https://i.postimg.cc/MTTvR4kh/i-fantaia-geometry.png', prompt: 'Geometría sagrada minimalista, líneas doradas sobre un fondo negro, patrón fractal, limpio, elegante.', category: 'abstracto' }
+            ];
+
+            const accordionContainer = document.getElementById('component-accordion');
+
+            Object.keys(components).forEach(key => {
+                const comp = components[key];
+                const item = document.createElement('div');
+                item.className = 'accordion-item bg-white rounded-lg shadow-md overflow-hidden';
+
+                item.innerHTML = `
+                    <button class="accordion-header flex justify-between items-center w-full p-6 text-left">
+                        <h3 class="text-xl font-bold text-gray-800">${comp.title}</h3>
+                        <span class="accordion-icon text-2xl font-bold text-primary transition-transform duration-300">+</span>
+                    </button>
+                    <div class="accordion-content" style="max-height: 0; transition: max-height 0.5s ease-in-out;">
+                        <div class="p-6 pt-0">
+                            <p class="mb-4 text-gray-700">${comp.description}</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${comp.examples.map(ex => `<span class="bg-gray-200 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded">${ex}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                accordionContainer.appendChild(item);
+            });
+
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const accordionItem = header.parentElement;
+                    const accordionContent = header.nextElementSibling;
+                    const accordionIcon = header.querySelector('.accordion-icon');
+
+                    document.querySelectorAll('.accordion-item').forEach(item => {
+                        if (item !== accordionItem && item.classList.contains('active')) {
+                            item.classList.remove('active');
+                            item.querySelector('.accordion-content').style.maxHeight = '0px';
+                            item.querySelector('.accordion-icon').style.transform = 'rotate(0deg)';
+                        }
+                    });
+
+                    if (accordionItem.classList.contains('active')) {
+                        accordionItem.classList.remove('active');
+                        accordionContent.style.maxHeight = '0px';
+                        accordionIcon.style.transform = 'rotate(0deg)';
+                    } else {
+                        accordionItem.classList.add('active');
+                        accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                        accordionIcon.style.transform = 'rotate(45deg)';
+                    }
+                });
+            });
+            
+            const styleSelect = document.getElementById('style');
+            const compositionSelect = document.getElementById('composition');
+            const lightingSelect = document.getElementById('lighting');
+
+            components.estilo.examples.forEach(ex => styleSelect.innerHTML += `<option value="${ex}">${ex}</option>`);
+            components.composicion.examples.forEach(ex => compositionSelect.innerHTML += `<option value="${ex}">${ex}</option>`);
+            components.iluminacion.examples.forEach(ex => lightingSelect.innerHTML += `<option value="${ex}">${ex}</option>`);
+
+            const inputs = ['subject', 'style', 'composition', 'lighting', 'details'];
+            const generatedPromptDiv = document.getElementById('generated-prompt');
+            const copyButton = document.getElementById('copy-button');
+
+            const updatePrompt = () => {
+                const promptParts = inputs.map(id => document.getElementById(id).value.trim());
+                const fullPrompt = promptParts.filter(Boolean).join(', ');
+                generatedPromptDiv.textContent = fullPrompt;
+            };
+
+            inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePrompt));
+            updatePrompt();
+
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(generatedPromptDiv.textContent).then(() => {
+                    copyButton.textContent = '¡Copiado!';
+                    copyButton.classList.remove('bg-secondary');
+                    copyButton.classList.add('bg-green-500');
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copiar Prompt';
+                        copyButton.classList.remove('bg-green-500');
+                        copyButton.classList.add('bg-secondary');
+                    }, 2000);
+                });
+            });
+            
+            const galleryGrid = document.getElementById('gallery-grid');
+            galleryItems.forEach(item => {
+                const galleryCard = document.createElement('div');
+                galleryCard.className = 'gallery-item card bg-white rounded-lg shadow-lg overflow-hidden';
+                galleryCard.dataset.category = item.category;
+                galleryCard.innerHTML = `
+                    <img src="${item.src}" alt="${item.prompt}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/ccc/999?text=Image+Not+Found';">
+                    <div class="p-4">
+                        <p class="text-sm text-gray-600 font-mono">${item.prompt}</p>
+                    </div>
+                `;
+                galleryGrid.appendChild(galleryCard);
+            });
+
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const allGalleryItems = document.querySelectorAll('.gallery-item');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'text-white');
+                        btn.classList.add('bg-white');
+                    });
+                    button.classList.add('bg-primary', 'text-white');
+                    button.classList.remove('bg-white');
+
+                    const filter = button.dataset.filter;
+                    allGalleryItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', (e) => {
+                window.location.hash = e.target.value;
+            });
+        });
+    </script>
+</body>
+</html>
